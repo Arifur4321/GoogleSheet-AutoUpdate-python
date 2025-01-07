@@ -1,0 +1,225 @@
+{
+    "data": [
+        {
+            "description": "L'azienda a cui \u00e8 associato questo Lead",
+            "date_updated": "2022-10-06T13:43:10.246000+00:00",
+            "id": "cf_nRf5biHeX0dJsonkv1EF0n3IWEruqG7JBI8Swqgz2Rb",
+            "is_shared": true,
+            "name": "Azienda",
+            "date_created": "2022-02-22T15:05:10.442000+00:00",
+            "updated_by": "user_DkKgE5xb5i4BWswYDLfJdKsgQUwasAS84ZxmuK3zNRE",
+            "accepts_multiple_values": true,
+            "referenced_custom_type_id": null,
+            "created_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": [
+                "CF Beauty",
+                "impact coaching",
+                "Marketing Programmatico",
+                "Pianificazione Fiscale"
+            ],
+            "type": "choices",
+            "associations": [
+                {
+                    "object_type": "opportunity",
+                    "required": false,
+                    "editable_with_roles": [],
+                    "custom_activity_type_id": null,
+                    "custom_object_type_id": null
+                }
+            ]
+        },
+        {
+            "description": "",
+            "date_updated": "2024-09-20T13:43:09.085000+00:00",
+            "id": "cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk",
+            "is_shared": true,
+            "name": "Data e Ora Appuntamento",
+            "date_created": "2022-06-06T11:43:01.330000+00:00",
+            "updated_by": "user_4vYiKg9K1tnGyKPDA8cc1Ap7e6ThiKdCKvUwLoem7Th",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": null,
+            "created_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": null,
+            "type": "datetime",
+            "associations": [
+                {
+                    "object_type": "opportunity",
+                    "required": false,
+                    "editable_with_roles": [],
+                    "custom_activity_type_id": null,
+                    "custom_object_type_id": null
+                }
+            ]
+        },
+        {
+            "description": null,
+            "date_updated": "2023-01-05T16:30:27.781000+00:00",
+            "id": "lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU",
+            "is_shared": true,
+            "name": "Disco Assegnata a",
+            "date_created": "2021-02-19T18:16:51.976000+00:00",
+            "updated_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": null,
+            "created_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": null,
+            "type": "text",
+            "associations": [
+                {
+                    "object_type": "lead",
+                    "required": false,
+                    "editable_with_roles": [],
+                    "custom_activity_type_id": null,
+                    "custom_object_type_id": null
+                }
+            ]
+        },
+        {
+            "description": "test",
+            "date_updated": "2024-12-11T09:41:49.724000+00:00",
+            "id": "cf_DnzUJ02F9GrvDm2KJkAywTuaph3ANXbayg3tyCLTpG5",
+            "is_shared": true,
+            "name": "disco cancel test",
+            "date_created": "2024-12-11T09:38:40.097000+00:00",
+            "updated_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": "",
+            "created_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": null,
+            "type": "text",
+            "associations": []
+        },
+        {
+            "description": null,
+            "date_updated": "2024-09-09T10:23:06.223000+00:00",
+            "id": "cf_9OFiIRy2tegG5oIj2qzAtnY0fxbc3f0XP1JkbWW8a0t",
+            "is_shared": true,
+            "name": "Follow up",
+            "date_created": "2024-09-09T10:23:05.965000+00:00",
+            "updated_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": "",
+            "created_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": null,
+            "type": "user",
+            "associations": [
+                {
+                    "object_type": "lead",
+                    "required": false,
+                    "editable_with_roles": [],
+                    "custom_activity_type_id": null,
+                    "custom_object_type_id": null
+                }
+            ]
+        },
+        {
+            "description": null,
+            "date_updated": "2024-09-09T10:22:42.784000+00:00",
+            "id": "cf_JXneixG43LKNfBu7O1hRqlEAEtcGee3XwSSxLDcVpcm",
+            "is_shared": true,
+            "name": "Follow-up",
+            "date_created": "2024-09-09T10:17:46.071000+00:00",
+            "updated_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": "",
+            "created_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": [],
+            "type": "choices",
+            "associations": []
+        },
+        {
+            "description": "Campo per Prenotare un lead inbound prima di Mandare email",
+            "date_updated": "2021-05-13T06:46:54.060000+00:00",
+            "id": "scf_XQx9HupnzxgcO6oz5PMNMVlsgVXB9cCY7QRowuCZGz2",
+            "is_shared": true,
+            "name": "Lead Prenotato",
+            "date_created": "2021-05-13T06:46:53.841000+00:00",
+            "updated_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": null,
+            "created_by": "user_LkQAPLf4mV4OTOtTgAencOcPka8g9mSpnogqSP3WUbA",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": null,
+            "type": "user",
+            "associations": [
+                {
+                    "object_type": "lead",
+                    "required": false,
+                    "editable_with_roles": [],
+                    "custom_activity_type_id": null,
+                    "custom_object_type_id": null
+                }
+            ]
+        },
+        {
+            "description": null,
+            "date_updated": "2022-04-07T10:37:29.012000+00:00",
+            "id": "cf_3VDaZa5dm01GGiAN5XDGQehXhE8lKcyTEhyF2KBKrIt",
+            "is_shared": true,
+            "name": "Risposto",
+            "date_created": "2022-04-07T10:21:12.326000+00:00",
+            "updated_by": "user_uTdI5aT4zndyhwCjmiobbrLMro7abudMuAWnQGpTbXi",
+            "accepts_multiple_values": true,
+            "referenced_custom_type_id": null,
+            "created_by": "user_uTdI5aT4zndyhwCjmiobbrLMro7abudMuAWnQGpTbXi",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": [
+                "No",
+                "Segreteria",
+                "Si"
+            ],
+            "type": "choices",
+            "associations": []
+        },
+        {
+            "description": "",
+            "date_updated": "2024-12-02T12:58:50.906000+00:00",
+            "id": "cf_K7Vu4ZQTlpHp5iRDgjiiPzh1bJmwzJF254Uar35iy0O",
+            "is_shared": true,
+            "name": "Tipo di Workshop",
+            "date_created": "2024-12-02T12:57:20.985000+00:00",
+            "updated_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "accepts_multiple_values": false,
+            "referenced_custom_type_id": "",
+            "created_by": "user_naqxaOoDKRZPYQ8hoHUgSmrBKP1OjH3RUsvyLU7FqkE",
+            "editable_with_roles": [],
+            "back_reference_is_visible": null,
+            "organization_id": "orga_j8Y4sGbtpdjPj04gQ7LiJ2c7edBMNfWN4abmMJeYQr2",
+            "choices": [
+                "Bootcamp Hybrid",
+                "Bootcamp Vendite",
+                "Finanze",
+                "Leadership",
+                "Marketing",
+                "Scaling",
+                "Team",
+                "Vendite"
+            ],
+            "type": "choices",
+            "associations": []
+        }
+    ],
+    "has_more": false
+}
