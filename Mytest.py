@@ -377,47 +377,47 @@
 
 #---------------------------------------  fetch all leads with contact and opportunity asigned to = Simone Banfi  -----------------------------------------------------------------------------------
 
-import json
-from closeio_api import Client
+# import json
+# from closeio_api import Client
 
-# Initialize Close API client with your API key
-api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
 
-# Define parameters
-assignee_name = "Alessio Chianetta"  # Replace with the actual assignee name
-limit = 100  # Adjust limit for the number of leads to fetch per request
-skip = 0  # Pagination starts from 0
-all_leads = []  # To store all the fetched leads
-
-while True:
-    # Fetch leads with the specified query and fields
-    response = api.get('lead', params={
-        '_limit': limit,
-        '_skip': skip,
-        '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
-        'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}"'
-    })
+# # Define parameters
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100  # Adjust limit for the number of leads to fetch per request
+# skip = 0  # Pagination starts from 0
+# all_leads = []  # To store all the fetched leads
+# date_filter="2025-01-14"
+# while True:
+#     # Fetch leads with the specified query and fields
+#     response = api.get('lead', params={
+#         '_limit': limit,
+#         '_skip': skip,
+#         '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#         'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+      
+#     })
     
-    # Add fetched leads to the list
-    all_leads.extend(response.get('data', []))
+#     # Add fetched leads to the list
+#     all_leads.extend(response.get('data', []))
     
-    # Check if there are more leads to fetch
-    if not response.get('has_more', False):
-        break  # Exit loop if no more leads to fetch
+#     # Check if there are more leads to fetch
+#     if not response.get('has_more', False):
+#         break  # Exit loop if no more leads to fetch
     
-    # Update skip for pagination
-    skip += limit
+#     # Update skip for pagination
+#     skip += limit
 
-# Write all leads to a JSON file
-with open('filtered_leads.json', 'w', encoding='utf-8') as file:
-    json.dump(all_leads, file, indent=4)
+# # Write all leads to a JSON file
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
 
-# Print the response in a human-readable format
-print("Fetched Leads:")
-for lead in all_leads:
-    print(json.dumps(lead, indent=4))
+# # Print the response in a human-readable format
+# print("Fetched Leads:")
+# for lead in all_leads:
+#     print(json.dumps(lead, indent=4))
 
- 
 
 #-------------------------------------------- for getting all custom field id ----------------------------------------------------- 
 # import json
@@ -433,7 +433,7 @@ for lead in all_leads:
 # }
 
 # # Fetch the custom fields
-# resp = api.get('custom_field/shared', params=params)
+# resp = api.get('custom_field/lead', params=params)
 
 # # Print the response in a human-readable way (JSON with indentation)
 # print("Human-readable custom fields response:")
@@ -455,7 +455,7 @@ for lead in all_leads:
 # api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
 
 # # Define parameters
-# assignee_name = "Simone Banfi"   
+# assignee_name = "Pasquale Siesto"   
 # date_filter = "2024-12-02"   
 # discovery_filter = "Discovery Programmata"   
 # limit = 100  # Adjust limit for the number of leads to fetch per request
@@ -638,3 +638,843 @@ for lead in all_leads:
 
 # except Exception as e:
 #     print(f"An error occurred: {e}")
+
+#----------------------------------------double fulter and  Data e Ora Appuntamento filter added -------------------
+#  Discovery Programata is working fine
+# import json
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters for fetching leads
+# assignee_name = "Simone banfi"  # Replace with the actual assignee name
+# limit = 100  # Adjust limit for the number of leads to fetch per request
+# skip = 0  # Pagination starts from 0
+# all_leads = []  # To store all the fetched leads
+# # close date format below yyyy-mm-dd  ----   2025-01-09
+# date_created="2025-01-01"
+# date_filter = "2024-12-02"  # Date filter for the second query
+# discovery_filter = "Discovery Programmata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads based on the initial query
+# while True:
+#     # Fetch leads with the specified query and fields
+#     response = api.get('lead', params={
+#         '_limit': limit,
+#         '_skip': skip,
+#         '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#         'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+#     })
+    
+#     # Add fetched leads to the list
+#     all_leads.extend(response.get('data', []))
+    
+#     # Check if there are more leads to fetch
+#     if not response.get('has_more', False):
+#         break  # Exit loop if no more leads to fetch
+    
+#     # Update skip for pagination
+#     skip += limit
+
+# # Write all leads to a JSON file
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+#                 #lead_name and
+                
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+#                 (
+#                     opportunity.get('status_display_name') == "Discovery Non Presentato" or 
+#                     opportunity.get('status_display_name') == "Discovery Completata" or
+#                     opportunity.get('status_display_name') == "Discovery Rischedulata" or 
+#                     opportunity.get('status_display_name') == discovery_filter
+
+#                 ) and
+#                 lead_name not in matching_lead_names
+#             ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+# --------------------------------------#  DISCOVERY PRENOTATA: is working ----------------------------------------------------------------------
+
+# import json
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters for fetching leads
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100  # Adjust limit for the number of leads to fetch per request
+# skip = 0  # Pagination starts from 0
+# all_leads = []  # To store all the fetched leads
+# # close date format below yyyy-mm-dd  ----   2025-01-09
+# date_created="2025-01-01"
+# date_filter = "2025-01-14"  # Date filter for the second query
+# discovery_filter = "Discovery Programmata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads based on the initial query
+# while True:
+#     # Fetch leads with the specified query and fields
+#     response = api.get('lead', params={
+#         '_limit': limit,
+#         '_skip': skip,
+#         '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#         'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+#     })
+    
+#     # Add fetched leads to the list
+#     all_leads.extend(response.get('data', []))
+    
+#     # Check if there are more leads to fetch
+#     if not response.get('has_more', False):
+#         break  # Exit loop if no more leads to fetch
+    
+#     # Update skip for pagination
+#     skip += limit
+
+# # Write all leads to a JSON file
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+#             # Ensure lead_name is not already processed
+#             lead_name
+#             and opportunity.get('date_created', '').startswith(date_filter)
+#             and opportunity.get('status_display_name') == discovery_filter
+#             and lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+# --------------------------------------#  DISCOVERY COMPLETATA: is working ----------------------------------------------------------------------
+
+
+
+# import json
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters for fetching leads
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100  # Adjust limit for the number of leads to fetch per request
+# skip = 0  # Pagination starts from 0
+# all_leads = []  # To store all the fetched leads
+# # close date format below yyyy-mm-dd  ----   2025-01-09
+# date_created="2025-01-01"
+# date_filter = "2025-01-13"  # Date filter for the second query
+# discovery_filter = "Discovery Completata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads based on the initial query
+# while True:
+#     # Fetch leads with the specified query and fields
+#     response = api.get('lead', params={
+#         '_limit': limit,
+#         '_skip': skip,
+#         '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#         'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+#     })
+    
+#     # Add fetched leads to the list
+#     all_leads.extend(response.get('data', []))
+    
+#     # Check if there are more leads to fetch
+#     if not response.get('has_more', False):
+#         break  # Exit loop if no more leads to fetch
+    
+#     # Update skip for pagination
+#     skip += limit
+
+# # Write all leads to a JSON file
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+            
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+#                 (
+                    
+#                     opportunity.get('status_display_name') == discovery_filter
+
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+
+# # --------------------------------------#  DISCOVERY RISCHEDULATA: is working ----------------------------------------------------------------------
+
+
+
+# import json
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters for fetching leads
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100  # Adjust limit for the number of leads to fetch per request
+# skip = 0  # Pagination starts from 0
+# all_leads = []  # To store all the fetched leads
+# # close date format below yyyy-mm-dd  ----   2025-01-09
+# date_created="2025-01-01"
+# date_filter = "2025-01-13"  # Date filter for the second query
+# discovery_filter = "Discovery Rischedulata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads based on the initial query
+# while True:
+#     # Fetch leads with the specified query and fields
+#     response = api.get('lead', params={
+#         '_limit': limit,
+#         '_skip': skip,
+#         '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#         'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+#     })
+    
+#     # Add fetched leads to the list
+#     all_leads.extend(response.get('data', []))
+    
+#     # Check if there are more leads to fetch
+#     if not response.get('has_more', False):
+#         break  # Exit loop if no more leads to fetch
+    
+#     # Update skip for pagination
+#     skip += limit
+
+# # Write all leads to a JSON file
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+            
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+#                 (
+                    
+#                     opportunity.get('status_display_name') == discovery_filter
+
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+
+
+# # --------------------------------------#  DEMO PRENOTATA: need to be updated ----------------------------------------------------------------------
+
+    # opportunity.get('status_display_name') == "Demo Completata Non Chiusa" or 
+                # opportunity.get('status_display_name') == "“Chiuso”" or  
+                # opportunity.get('status_display_name') == "Chiuso PFP" or
+             # opportunity.get('status_display_name') == "Chiuso Evento" or 
+            # opportunity.get('status_display_name') == "Deposito Inviato"  or
+            #  opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)" 
+            #     opportunity.get('status_display_name') == "Demo Rischedulata" or
+            #     opportunity.get('status_display_name') == "Contratto Firmato" or
+            #     opportunity.get('status_display_name') == "Deposito Rimborsato" or
+            #     opportunity.get('status_display_name') == "Perso (Non Chiuso)" or
+            #     opportunity.get('status_display_name') == "Demo di Follow-up"   
+            #     #opportunity.get('status_display_name') == "Demo Completata Non Chiusa" 
+            #     #opportunity.get('status_display_name') == "Discovery Completata" or 
+            #    # opportunity.get('status_display_name') == "Discovery Non Presentato"
+
+
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+#             opportunity.get('date_created', '').startswith(date_filter) and
+            
+#             (
+#                 opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)" or
+#                 opportunity.get('note') != "Demo di Pianificazione Fiscale"
+#             ) and
+#             (
+#                 opportunity.get('status_display_name') == "Demo Programmata" or  
+#                 opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)"
+#             ) and
+#             lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+
+# import json
+# import logging
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100
+# skip = 0
+# all_leads = []
+# date_filter = "2025-01-14"  # Date filter for the second query
+# discovery_filter = "Demo Programmata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads
+# while True:
+#     try:
+#         # Fetch leads with the specified query and fields
+#         response = api.get('lead', params={
+#             '_limit': limit,
+#             '_skip': skip,
+#             '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#             'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+#         })
+#         # Add fetched leads to the list
+#         all_leads.extend(response.get('data', []))
+
+#         # Check if there are more leads to fetch
+#         if not response.get('has_more', False):
+#             break  # Exit loop if no more leads to fetch
+
+#         # Update skip for pagination
+#         skip += limit
+#     except Exception as e:
+#         logging.error(f"Error fetching leads: {e}")
+#         break
+
+# # Write all leads to a JSON file (optional)
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+
+
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+#             opportunity.get('date_created', '').startswith(date_filter) and
+#             (
+#                 opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)" or
+#                 opportunity.get('note') != "Demo di Pianificazione Fiscale"
+#             ) and
+#             (
+#                 opportunity.get('status_display_name') == "Demo Programmata" or  
+#                 opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)"
+#             ) and
+#             lead_name not in matching_lead_names
+#         ):
+#             # Additional loop to check the specific condition
+#             skip_lead = False
+#             for opp in lead.get('opportunities', []):
+#                 if (
+#                     opp.get('date_created', '').startswith(date_filter) and
+#                     opp.get('status_display_name') == "Candidatura Inviata (ha completato il form)"
+#                 ):
+#                     skip_lead = True
+#                     break
+
+#             if not skip_lead:
+#                 matching_leads += 1
+#                 matching_lead_names.append(lead_name)
+#                 break  # Stop further processing for this lead if it matches
+
+#   # 
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+
+import json
+import logging
+from closeio_api import Client
+
+# Initialize Close API client with your API key
+api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# Define parameters
+assignee_name = "Simone banfi"  # Replace with the actual assignee name
+limit = 100
+skip = 0
+all_leads = []
+date_filter = "2024-12-02"  # Date filter for the second query
+discovery_filter = "Demo Programmata"  # Example status filter
+matching_lead_names = []  # To store names of matching leads
+
+# Fetch all leads
+while True:
+    try:
+        # Fetch leads with the specified query and fields
+        response = api.get('lead', params={
+            '_limit': limit,
+            '_skip': skip,
+            '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+            'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+        })
+        # Add fetched leads to the list
+        all_leads.extend(response.get('data', []))
+
+        # Check if there are more leads to fetch
+        if not response.get('has_more', False):
+            break  # Exit loop if no more leads to fetch
+
+        # Update skip for pagination
+        skip += limit
+    except Exception as e:
+        logging.error(f"Error fetching leads: {e}")
+        break
+
+# Write all leads to a JSON file (optional)
+with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+    json.dump(all_leads, file, indent=4)
+
+# Filter leads based on opportunities and additional criteria
+
+# Filter leads based on opportunities and additional criteria
+matching_leads = 0
+for lead in all_leads:
+    # Check if any opportunity disqualifies the lead
+    disqualify_lead = False
+    for opportunity in lead.get('opportunities', []):
+        if (
+            opportunity.get('date_created', '').startswith(date_filter) and
+            opportunity.get('status_display_name') == "Candidatura Inviata (ha completato il form)"
+        ):
+            disqualify_lead = True
+            break  # No need to check further opportunities for this lead
+
+    # If the lead is disqualified, skip it
+    if disqualify_lead:
+        continue
+
+    # Process the lead for matching opportunities
+    for opportunity in lead.get('opportunities', []):
+        lead_name = opportunity.get('lead_name')
+        if (
+            opportunity.get('date_created', '').startswith(date_filter) and
+            (
+                opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)" or
+                opportunity.get('note') != "Demo di Pianificazione Fiscale"
+            ) and
+            (
+                opportunity.get('status_display_name') == "Demo Programmata" or
+                opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)"
+            ) and
+            lead_name not in matching_lead_names
+        ):
+            matching_leads += 1
+            matching_lead_names.append(lead_name)
+            break  # Stop further processing for this lead if it matches
+
+# Print matching lead names
+print("\nMatching Leads:")
+for lead_name in matching_lead_names:
+    print(lead_name)
+
+# Print total number of matching leads
+print(f"\nTotal Matching Leads: {matching_leads}")
+
+# # --------------------------------------#  Demo Marketing (Candidatura Inviata): full working ----------------------------------------------------------------------
+
+
+# import json
+# import logging
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100
+# skip = 0
+# all_leads = []
+# date_filter = "2025-01-02"  # Date filter for the second query
+# discovery_filter = "Demo Programmata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads
+# while True:
+#     try:
+#         # Fetch leads with the specified query and fields
+#         response = api.get('lead', params={
+#             '_limit': limit,
+#             '_skip': skip,
+#             '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#             'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+#         })
+#         # Add fetched leads to the list
+#         all_leads.extend(response.get('data', []))
+        
+#         # Check if there are more leads to fetch
+#         if not response.get('has_more', False):
+#             break  # Exit loop if no more leads to fetch
+        
+#         # Update skip for pagination
+#         skip += limit
+#     except Exception as e:
+#         logging.error(f"Error fetching leads: {e}")
+#         break
+
+# # Write all leads to a JSON file (optional)
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+            
+#                 #opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+#                 opportunity.get('date_created', '').startswith(date_filter) and  
+#                 'custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk' not in opportunity  and
+#                 (
+                    
+#                     opportunity.get('status_display_name') == discovery_filter or 
+#                     opportunity.get('status_display_name') == "Candidatura Inviata (ha completato il form)" 
+                  
+                     
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+
+# # --------------------------------------#  Demo Completata : full working ----------------------------------------------------------------------
+
+
+# import json
+# import logging
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100
+# skip = 0
+# all_leads = []
+# date_filter = "2025-01-13"  # Date filter for the second query
+# discovery_filter = "Demo Completata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads
+# while True:
+#     try:
+#         # Fetch leads with the specified query and fields
+#         response = api.get('lead', params={
+#             '_limit': limit,
+#             '_skip': skip,
+#             '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#             'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+#         })
+#         # Add fetched leads to the list
+#         all_leads.extend(response.get('data', []))
+        
+#         # Check if there are more leads to fetch
+#         if not response.get('has_more', False):
+#             break  # Exit loop if no more leads to fetch
+        
+#         # Update skip for pagination
+#         skip += limit
+#     except Exception as e:
+#         logging.error(f"Error fetching leads: {e}")
+#         break
+
+# # Write all leads to a JSON file (optional)
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+            
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                
+#                 (
+
+#                     opportunity.get('status_display_name') == discovery_filter or
+                  
+#                     opportunity.get('status_display_name') == "Demo Completata Non Chiusa" or 
+                    
+#                     opportunity.get('status_display_name') == "“Chiuso”" or  
+#                     opportunity.get('status_display_name') == "Chiuso PFP" or
+#                     opportunity.get('status_display_name') == "Chiuso Evento" or 
+#                     opportunity.get('status_display_name') == "Deposito Inviato"  
+                     
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+
+
+# --------------------------------------#  Demo Rischedulata : full working   ----------------------------------------------------------------------
+
+
+# import json
+# import logging
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters
+# assignee_name = "Simone banfi"  # Replace with the actual assignee name
+# limit = 100
+# skip = 0
+# all_leads = []
+# date_filter = "2024-12-03"  # Date filter for the second query
+# discovery_filter = "Demo Rischedulata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads
+# while True:
+#     try:
+#         # Fetch leads with the specified query and fields
+#         response = api.get('lead', params={
+#             '_limit': limit,
+#             '_skip': skip,
+#             '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#             'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+#         })
+#         # Add fetched leads to the list
+#         all_leads.extend(response.get('data', []))
+        
+#         # Check if there are more leads to fetch
+#         if not response.get('has_more', False):
+#             break  # Exit loop if no more leads to fetch
+        
+#         # Update skip for pagination
+#         skip += limit
+#     except Exception as e:
+#         logging.error(f"Error fetching leads: {e}")
+#         break
+
+# # Write all leads to a JSON file (optional)
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+            
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                
+#                 (
+
+#                     opportunity.get('status_display_name') == discovery_filter 
+              
+                     
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+
+
+
+#------------------ Demo programata -------------------------------------
+
+# import json
+# import logging
+# from closeio_api import Client
+
+# # Initialize Close API client with your API key
+# api = Client('api_33gDN2iQffFOdrOEPtsUdg.3lzKAcaZDseZ4MblVHMN7i')
+
+# # Define parameters
+# assignee_name = "Lorenzo Mariani"  # Replace with the actual assignee name
+# limit = 100
+# skip = 0
+# all_leads = []
+# date_filter = "2025-01-02"  # Date filter for the second query
+# discovery_filter = "Demo Programmata"  # Example status filter
+# matching_lead_names = []  # To store names of matching leads
+
+# # Fetch all leads
+# while True:
+#     try:
+#         # Fetch leads with the specified query and fields
+#         response = api.get('lead', params={
+#             '_limit': limit,
+#             '_skip': skip,
+#             '_fields': 'id,display_name,opportunities,custom,contacts,created_by_name,updated_by_name,date_created,date_updated',
+#             'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+#         })
+
+#         # Add fetched leads to the list
+#         all_leads.extend(response.get('data', []))
+
+#         # Check if there are more leads to fetch
+#         if not response.get('has_more', False):
+#             break  # Exit loop if no more leads to fetch
+
+#         # Update skip for pagination
+#         skip += limit
+#     except Exception as e:
+#         logging.error(f"Error fetching leads: {e}")
+#         break
+
+# # Write all leads to a JSON file (optional)
+# with open('filtered_leads.json', 'w', encoding='utf-8') as file:
+#     json.dump(all_leads, file, indent=4)
+
+# # Filter leads based on opportunities and additional criteria
+# matching_leads = 0
+# for lead in all_leads:
+#     for opportunity in lead.get('opportunities', []):
+#         lead_name = opportunity.get('lead_name')
+#         if (
+#                 #lead_name and
+                
+#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+#                 (
+#                     opportunity.get('status_display_name') == "Demo Non Presentato" or
+#                     opportunity.get('status_display_name') == "Demo Completata Non Chiusa" or
+#                     opportunity.get('status_display_name') == "Demo Rischedulata" or
+#                     opportunity.get('status_display_name') == "Contratto Firmato" or
+#                     opportunity.get('status_display_name') == "Chiuso" or
+#                     opportunity.get('status_display_name') == "Chiuso PFP" or
+#                     opportunity.get('status_display_name') == "Chiuso Evento" or
+#                     opportunity.get('status_display_name') == "Deposito Rimborsato" or
+#                     opportunity.get('status_display_name') == "Perso (Non Chiuso)" or
+#                     opportunity.get('status_display_name') == "Demo di Follow-up" or
+#                     opportunity.get('status_display_name') == "Deposito Inviato" or
+#                     opportunity.get('status_display_name') == discovery_filter
+
+#                 ) and
+#                 lead_name not in matching_lead_names
+#         ):
+#             matching_leads += 1
+#             matching_lead_names.append(lead_name)
+#             break  # Stop further processing for this lead if it matches
+
+# # Print matching lead names
+# print("\nMatching Leads:")
+# for lead_name in matching_lead_names:
+#     print(lead_name)
+
+# # Print total number of matching leads
+# print(f"\nTotal Matching Leads: {matching_leads}")
+

@@ -4,6 +4,9 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import logging
 from datetime import datetime
+import time
+from googleapiclient.errors import HttpError
+import random 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -132,39 +135,81 @@ def fetch_google_sheet_data(sheet_name):
     return data, service, sheet
 
  
+# ---------------previous working one --------------------
+
+# def update_google_sheet(service, sheet, sheet_data, sheet_name, row_index, col_index, value):
+#     try:
+#         # Get current value from the local sheet_data (no extra GET call)
+#         existing_value = ""
+#         if row_index < len(sheet_data) and col_index < len(sheet_data[row_index]):
+#             existing_value = sheet_data[row_index][col_index]
+
+#         if existing_value is None:
+#             existing_value = ""  # Handle None values if any
+
+#         # Before updating sheet_data, ensure the row has enough columns
+#         if len(sheet_data[row_index]) <= col_index:
+#             # Extend the row with empty strings so that `col_index` is valid
+#             sheet_data[row_index].extend([""] * (col_index - len(sheet_data[row_index]) + 1))
+
+#         # Now proceed with your previous logic
+#         if existing_value == "":
+#             # Cell is empty, update
+#             cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
+#             body = {'values': [[value]]}
+#             sheet.values().update(
+#                 spreadsheetId=SHEET_ID,
+#                 range=cell_range,
+#                 valueInputOption="RAW",
+#                 body=body
+#             ).execute()
+#             logging.info(f"Updated {cell_range} with value: {value} (was empty)")
+#             sheet_data[row_index][col_index] = str(value)
+#         else:
+#             # Cell not empty, check if different
+#             if existing_value != str(value):
+#                 cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
+#                 body = {'values': [[value]]}
+#                 sheet.values().update(
+#                     spreadsheetId=SHEET_ID,
+#                     range=cell_range,
+#                     valueInputOption="RAW",
+#                     body=body
+#                 ).execute()
+#                 logging.info(f"Updated {cell_range} with new value: {value} (old value: {existing_value})")
+#                 sheet_data[row_index][col_index] = str(value)
+#             else:
+#                 # Same value, skip
+#                 cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
+#                 logging.info(f"Skipped updating {cell_range} because it already has the same value: '{existing_value}'")
+#     except Exception as e:
+#         logging.error(f"Error updating cell at row {row_index+1}, col {col_index+1}: {e}")
+
 
 
 def update_google_sheet(service, sheet, sheet_data, sheet_name, row_index, col_index, value):
-    try:
-        # Get current value from the local sheet_data (no extra GET call)
-        existing_value = ""
-        if row_index < len(sheet_data) and col_index < len(sheet_data[row_index]):
-            existing_value = sheet_data[row_index][col_index]
+    max_retries = 5
+    backoff_factor = 2
+    retry_count = 0
 
-        if existing_value is None:
-            existing_value = ""  # Handle None values if any
+    while retry_count < max_retries:
+        try:
+            # Get current value from the local sheet_data (no extra GET call)
+            existing_value = ""
+            if row_index < len(sheet_data) and col_index < len(sheet_data[row_index]):
+                existing_value = sheet_data[row_index][col_index]
 
-        # Before updating sheet_data, ensure the row has enough columns
-        if len(sheet_data[row_index]) <= col_index:
-            # Extend the row with empty strings so that `col_index` is valid
-            sheet_data[row_index].extend([""] * (col_index - len(sheet_data[row_index]) + 1))
+            if existing_value is None:
+                existing_value = ""  # Handle None values if any
 
-        # Now proceed with your previous logic
-        if existing_value == "":
-            # Cell is empty, update
-            cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
-            body = {'values': [[value]]}
-            sheet.values().update(
-                spreadsheetId=SHEET_ID,
-                range=cell_range,
-                valueInputOption="RAW",
-                body=body
-            ).execute()
-            logging.info(f"Updated {cell_range} with value: {value} (was empty)")
-            sheet_data[row_index][col_index] = str(value)
-        else:
-            # Cell not empty, check if different
-            if existing_value != str(value):
+            # Before updating sheet_data, ensure the row has enough columns
+            if len(sheet_data[row_index]) <= col_index:
+                # Extend the row with empty strings so that col_index is valid
+                sheet_data[row_index].extend([""] * (col_index - len(sheet_data[row_index]) + 1))
+
+            # Now proceed with your previous logic
+            if existing_value == "":
+                # Cell is empty, update
                 cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
                 body = {'values': [[value]]}
                 sheet.values().update(
@@ -173,14 +218,38 @@ def update_google_sheet(service, sheet, sheet_data, sheet_name, row_index, col_i
                     valueInputOption="RAW",
                     body=body
                 ).execute()
-                logging.info(f"Updated {cell_range} with new value: {value} (old value: {existing_value})")
+                logging.info(f"Updated {cell_range} with value: {value} (was empty)")
                 sheet_data[row_index][col_index] = str(value)
             else:
-                # Same value, skip
-                cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
-                logging.info(f"Skipped updating {cell_range} because it already has the same value: '{existing_value}'")
-    except Exception as e:
-        logging.error(f"Error updating cell at row {row_index+1}, col {col_index+1}: {e}")
+                # Cell not empty, check if different
+                if existing_value != str(value):
+                    cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
+                    body = {'values': [[value]]}
+                    sheet.values().update(
+                        spreadsheetId=SHEET_ID,
+                        range=cell_range,
+                        valueInputOption="RAW",
+                        body=body
+                    ).execute()
+                    logging.info(f"Updated {cell_range} with new value: {value} (old value: {existing_value})")
+                    sheet_data[row_index][col_index] = str(value)
+                else:
+                    # Same value, skip
+                    cell_range = f"{sheet_name}!{get_column_letter(col_index)}{row_index+1}"
+                    logging.info(f"Skipped updating {cell_range} because it already has the same value: '{existing_value}'")
+            break  # Exit the retry loop if successful
+        except HttpError as e:
+            if e.resp.status == 429:
+                retry_count += 1
+                sleep_time = backoff_factor ** retry_count + random.uniform(0, 1)
+                logging.warning(f"Rate limit exceeded. Retrying in {sleep_time:.2f} seconds...")
+                time.sleep(sleep_time)
+            else:
+                logging.error(f"Error updating cell at row {row_index+1}, col {col_index+1}: {e}")
+                break
+        except Exception as e:
+            logging.error(f"Error updating cell at row {row_index+1}, col {col_index+1}: {e}")
+            break
 
  
 def get_column_letter(index):
@@ -189,9 +258,6 @@ def get_column_letter(index):
         column = chr(index % 26 + 65) + column
         index = index // 26 - 1
     return column
-
-
- 
 
 # Data e Ora Appuntamento  custom-field-id = cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk
 def fetch_discovery_prenotata_data(assignee_name, date_filter, discovery_filter):
@@ -222,66 +288,19 @@ def fetch_discovery_prenotata_data(assignee_name, date_filter, discovery_filter)
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
-                lead_name not in matching_lead_names
+                # Ensure lead_name is not already processed
+                lead_name
+                and opportunity.get('date_created', '').startswith(date_filter)
+                and opportunity.get('status_display_name') == discovery_filter
+                and lead_name not in matching_lead_names
             ):
                 matching_leads += 1
                 matching_lead_names.append(lead_name)
                 break
 
-    print("Matching lead count -----------------------:", matching_leads)
-    print("Matching lead names -----------------------:", matching_lead_names)
+    print("Matching lead count -----------fetch_discovery_prenotata_data------------:", matching_leads)
+    print("Matching lead names -----------fetch_discovery_prenotata_data ------------:", matching_lead_names)
     return matching_leads
-
- 
-
-# def fetch_discovery_programmata_data(assignee_name, date_filter, discovery_filter):
-#     print("Assignee name, date_filter, discovery_filter is -------------------:", assignee_name, date_filter, discovery_filter)
-#     limit = 100
-#     skip = 0
-#     all_leads = []
-#     matching_lead_names = []
-    
-#     while True:
-#         try:
-#             response = api.get('lead', params={
-#                 '_limit': limit,
-#                 '_skip': skip,
-#                 '_fields': 'id,display_name,opportunities,date_created',
-#                 'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated  custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk:{date_filter}'
-#             })
-#             all_leads.extend(response.get('data', []))
-#             if not response.get('has_more', False):
-#                 break
-#             skip += limit
-#         except Exception as e:
-#             logging.error(f"Error fetching Discovery Prenotata data: {e}")
-#             break
-
-#     matching_leads = 0
-#     for lead in all_leads:
-#         for opportunity in lead.get('opportunities', []):
-#             lead_name = opportunity.get('lead_name')
-#             if (
-#                 opportunity.get('status_display_name') == discovery_filter and 
-#                 # opportunity.get('date_created', '').startswith(date_filter) and 
-#                 opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
-
-#                 opportunity.get('status_display_name') == "Discovery Non Presentato" or 
-#                 opportunity.get('status_display_name') == "Discovery Completata" or
-#                 opportunity.get('status_display_name') == "Discovery Rischedulata"
-
-
-#                 lead_name not in matching_lead_names
-#             ):
-#                 matching_leads += 1
-#                 matching_lead_names.append(lead_name)
-#                 break
-
-#     print("Matching lead count -----------------------:", matching_leads)
-#     print("Matching lead names -----------------------:", matching_lead_names)
-#     return matching_leads
 
 
 def fetch_discovery_programmata_data(assignee_name, date_filter, discovery_filter):
@@ -357,17 +376,21 @@ def fetch_discovery_completata_data(assignee_name, date_filter, discovery_filter
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
-                #  opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+            
+                opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                (
+                    
+                    opportunity.get('status_display_name') == discovery_filter
+
+                ) and
                 lead_name not in matching_lead_names
             ):
                 matching_leads += 1
                 matching_lead_names.append(lead_name)
                 break
 
-    print("Matching lead count -----------------------:", matching_leads)
-    print("Matching lead names -----------------------:", matching_lead_names)
+    print("Matching lead count ------------fetch_discovery_completata_data-----------:", matching_leads)
+    print("Matching lead names -----------fetch_discovery_completata_data------------:", matching_lead_names)
     return matching_leads
 
 
@@ -399,8 +422,13 @@ def fetch_discovery_rischedulata_data(assignee_name, date_filter, discovery_filt
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
+            
+                opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                (
+                    
+                    opportunity.get('status_display_name') == discovery_filter
+
+                ) and
                 lead_name not in matching_lead_names
             ):
                 matching_leads += 1
@@ -425,7 +453,7 @@ def fetch_demo_prenotata_data(assignee_name, date_filter, discovery_filter):
                 '_limit': limit,
                 '_skip': skip,
                 '_fields': 'id,display_name,opportunities,date_created',
-                'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+                'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
             })
             all_leads.extend(response.get('data', []))
             if not response.get('has_more', False):
@@ -437,21 +465,43 @@ def fetch_demo_prenotata_data(assignee_name, date_filter, discovery_filter):
 
     matching_leads = 0
     for lead in all_leads:
+    # Check if any opportunity disqualifies the lead
+        disqualify_lead = False
+        for opportunity in lead.get('opportunities', []):
+            if (
+                opportunity.get('date_created', '').startswith(date_filter) and
+                opportunity.get('status_display_name') == "Candidatura Inviata (ha completato il form)"
+            ):
+                disqualify_lead = True
+                break  # No need to check further opportunities for this lead
+
+        # If the lead is disqualified, skip it
+        if disqualify_lead:
+            continue
+
+        # Process the lead for matching opportunities
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
+                opportunity.get('date_created', '').startswith(date_filter) and
+                (
+                    opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)" or
+                    opportunity.get('note') != "Demo di Pianificazione Fiscale"
+                ) and
+                (
+                    opportunity.get('status_display_name') == "Demo Programmata" or
+                    opportunity.get('status_display_name') != "Candidatura Inviata (ha completato il form)"
+                ) and
                 lead_name not in matching_lead_names
             ):
                 matching_leads += 1
                 matching_lead_names.append(lead_name)
-                break
+                break  # Stop further processing for this lead if it matches
+
 
     print("Matching lead count -----------------------:", matching_leads)
     print("Matching lead names -----------------------:", matching_lead_names)
     return matching_leads
-
 
 def fetch_demo_programmata_data(assignee_name, date_filter, discovery_filter):
     print("Assignee name, date_filter, discovery_filter is -------------------:", assignee_name, date_filter, discovery_filter)
@@ -510,8 +560,8 @@ def fetch_demo_programmata_data(assignee_name, date_filter, discovery_filter):
     return matching_leads
 
 
-def fetch_demo_completata_data(assignee_name, date_filter, discovery_filter):
-    print("Assignee name, date_filter, discovery_filter is -------------------:", assignee_name, date_filter, discovery_filter)
+def Fetch_Demo_Marketing(assignee_name, date_filter, discovery_filter):
+    print("Assignee name, date_filter, discovery_filter is ---------Fetch_Demo_Marketing  ------New Field----------:", assignee_name, date_filter, discovery_filter)
     limit = 100
     skip = 0
     all_leads = []
@@ -523,7 +573,7 @@ def fetch_demo_completata_data(assignee_name, date_filter, discovery_filter):
                 '_limit': limit,
                 '_skip': skip,
                 '_fields': 'id,display_name,opportunities,date_created',
-                'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}" sort:updated'
+                'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
             })
             all_leads.extend(response.get('data', []))
             if not response.get('has_more', False):
@@ -538,10 +588,73 @@ def fetch_demo_completata_data(assignee_name, date_filter, discovery_filter):
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
+            
+                #opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                opportunity.get('date_created', '').startswith(date_filter) and  
+                'custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk' not in opportunity  and
+                (
+                    
+                    opportunity.get('status_display_name') == discovery_filter or 
+                    opportunity.get('status_display_name') == "Candidatura Inviata (ha completato il form)" 
+                  
+                     
+                ) and
                 lead_name not in matching_lead_names
             ):
+                matching_leads += 1
+                matching_lead_names.append(lead_name)
+                break
+
+    print("Matching lead count ---------Fetch_Demo_Marketing  ------New Field--------------:", matching_leads)
+    print("Matching lead names -----------Fetch_Demo_Marketing  ------New Field ------------:", matching_lead_names)
+    return matching_leads
+
+
+def fetch_demo_completata_data(assignee_name, date_filter, discovery_filter):
+    print("Assignee name, date_filter, discovery_filter is -------------------:", assignee_name, date_filter, discovery_filter)
+    limit = 100
+    skip = 0
+    all_leads = []
+    matching_lead_names = []
+    
+    while True:
+        try:
+            response = api.get('lead', params={
+                '_limit': limit,
+                '_skip': skip,
+                '_fields': 'id,display_name,opportunities,date_created',
+                'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}" sort:updated'
+            })
+            all_leads.extend(response.get('data', []))
+            if not response.get('has_more', False):
+                break
+            skip += limit
+        except Exception as e:
+            logging.error(f"Error fetching Discovery Prenotata data: {e}")
+            break
+
+    matching_leads = 0
+    for lead in all_leads:
+        for opportunity in lead.get('opportunities', []):
+            lead_name = opportunity.get('lead_name')
+            if (
+            
+                opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                
+                (
+
+                    #opportunity.get('status_display_name') == discovery_filter or
+                  
+                    opportunity.get('status_display_name') == "Demo Completata Non Chiusa" or 
+                    
+                    opportunity.get('status_display_name') == "“Chiuso”" or  
+                    opportunity.get('status_display_name') == "Chiuso PFP" or
+                    opportunity.get('status_display_name') == "Chiuso Evento" or 
+                    opportunity.get('status_display_name') == "Deposito Inviato"  
+                     
+                ) and
+                lead_name not in matching_lead_names
+            ): 
                 matching_leads += 1
                 matching_lead_names.append(lead_name)
                 break
@@ -564,7 +677,7 @@ def fetch_demo_rischedulata_data(assignee_name, date_filter, discovery_filter):
                 '_limit': limit,
                 '_skip': skip,
                 '_fields': 'id,display_name,opportunities,date_created',
-                'query': f'custom.lcf_NVYM9Lbe5754j18xHbmbbITZR1OArJqNVsosiyXhGKU:"{assignee_name}"'
+                'query': f'custom.lcf_QTnX3q35QFQn1JjioaJPB3kf9TEIjSGQJhl1bPaZZBY:"{assignee_name}"'
             })
             all_leads.extend(response.get('data', []))
             if not response.get('has_more', False):
@@ -579,8 +692,15 @@ def fetch_demo_rischedulata_data(assignee_name, date_filter, discovery_filter):
         for opportunity in lead.get('opportunities', []):
             lead_name = opportunity.get('lead_name')
             if (
-                opportunity.get('status_display_name') == discovery_filter and 
-                opportunity.get('date_created', '').startswith(date_filter) and 
+            
+                opportunity.get('custom.cf_K5cgpMaCGXCPXd1c59Kosi8RvLBzz6DOQ09CdJSZgYk', '').startswith(date_filter) and
+                
+                (
+
+                    opportunity.get('status_display_name') == discovery_filter 
+              
+                     
+                ) and
                 lead_name not in matching_lead_names
             ):
                 matching_leads += 1
@@ -616,6 +736,7 @@ def process_and_update_sheet(sheet_name):
             outbound_calls_row, calls_duration_row, opportunity_won_row, value_won_annualized_row = None, None, None, None
             discovery_prenotata_row, discovery_programmata_row, discovery_completata_row, discovery_rischedulata_row = None, None, None, None
             demo_prenotata_row, demo_programmata_row, demo_completata_row, demo_rischedulata_row, leads_chiamati_row = None, None, None, None, None
+            demo_marketing_row = None  # New row for Demo Marketing
 
             for i in range(row_index, len(sheet_data)):
                 if len(sheet_data[i]) > 0:
@@ -638,6 +759,8 @@ def process_and_update_sheet(sheet_name):
                         discovery_rischedulata_row = i + 1
                     elif row_name == "demo prenotata":
                         demo_prenotata_row = i + 1
+                    elif row_name == "demo marketing (candidatura inviata)":  # New row for Demo Marketing
+                        demo_marketing_row = i + 1
                     elif row_name == "demo programmata":
                         demo_programmata_row = i + 1
                     elif row_name == "demo completata":
@@ -646,6 +769,8 @@ def process_and_update_sheet(sheet_name):
                         demo_rischedulata_row = i + 1
                     elif row_name == "leads chiamati":
                         leads_chiamati_row = i + 1
+               
+
 
                 if all([outbound_calls_row, calls_duration_row, opportunity_won_row, value_won_annualized_row]):
                     break
@@ -680,6 +805,8 @@ def process_and_update_sheet(sheet_name):
                         democ_row_idx = demo_completata_row - 1 if demo_completata_row else None
                         demor_row_idx = demo_rischedulata_row - 1 if demo_rischedulata_row else None
 
+                        dm_row_idx = demo_marketing_row - 1 if demo_marketing_row else None  # New row for Demo Marketing
+
                         # Update cells using the updated version of update_google_sheet that doesn't do extra GET calls
                         update_google_sheet(service, sheet, sheet_data, sheet_name, oc_row_idx, col_index, total_calls)
 
@@ -710,7 +837,7 @@ def process_and_update_sheet(sheet_name):
                             update_google_sheet(service, sheet, sheet_data, sheet_name, dr_row_idx, col_index, count)
 
                         if demop_row_idx is not None:
-                            count = fetch_demo_prenotata_data(assignee_name, formatted_date, "Demo Prenotata")
+                            count = fetch_demo_prenotata_data(assignee_name, formatted_date, "Demo Programmata")
                             update_google_sheet(service, sheet, sheet_data, sheet_name, demop_row_idx, col_index, count)
 
                         if demopr_row_idx is not None:
@@ -724,6 +851,10 @@ def process_and_update_sheet(sheet_name):
                         if demor_row_idx is not None:
                             count = fetch_demo_rischedulata_data(assignee_name, formatted_date, "Demo Rischedulata")
                             update_google_sheet(service, sheet, sheet_data, sheet_name, demor_row_idx, col_index, count)
+
+                        if dm_row_idx is not None:
+                            count = Fetch_Demo_Marketing(assignee_name, formatted_date, "Demo Programmata")
+                            update_google_sheet(service, sheet, sheet_data, sheet_name, dm_row_idx, col_index, count)
 
                     except Exception as e:
                         logging.error(f"Error processing date {date} for user {assignee_name} in sheet {sheet_name}: {e}")
@@ -751,4 +882,3 @@ if __name__ == "__main__":
 
 
 
- 
